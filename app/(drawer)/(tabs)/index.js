@@ -35,7 +35,7 @@ const router = useRouter();
       </TouchableOpacity>
 
   
-<TouchableOpacity onPress={() => router.push('/singup')}>
+<TouchableOpacity onPress={() => router.push('/signup')}>
   <Text style={{ textAlign: 'center', marginTop: 15 }}>
     Don’t have an account? 
     <Text style={{ color: '#4CAF50', fontWeight: 'bold' }}>
