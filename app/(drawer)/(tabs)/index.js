@@ -6,6 +6,44 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 const router = useRouter();
+
+
+const handleLogin = async () => {
+  console.log("login clicked");
+
+  try {
+    const res = await fetch('https://serveease-backend-f058.onrender.com/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log("response:", data);
+
+    if (!res.ok) {
+      alert(data.message || "Login failed");
+      return;
+    }
+
+    alert("Login successful 🎉");
+
+  } catch (error) {
+    console.log(error);
+    alert("Something went wrong");
+  }
+};
+
+
+
+
+
   return (
     <View style={styles.container}>
 <Image
@@ -30,7 +68,7 @@ const router = useRouter();
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.button}>
+<TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 

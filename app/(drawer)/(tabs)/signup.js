@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -6,29 +7,54 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
   const handleSignup = async () => {
     console.log("button clicked");
-  try {
-    const res = await fetch('http://192.0.0.2:3000/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-    });
 
-    const data = await res.json();
-    console.log(data);
+    // ✅ basic validation
+    if (!name || !email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
 
-  } catch (error) {
-    console.log(error);
-  }
-};
+    try {
+      const res = await fetch('https://serveease-backend-f058.onrender.com/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+
+      // ❌ if error from backend
+      if (!res.ok) {
+        alert(data.message || "Signup failed");
+        return;
+      }
+
+      // ✅ store token
+      await AsyncStorage.setItem('token', data.token);
+
+      alert("Signup successful 🎉");
+
+      // optional reset
+      setName('');
+      setEmail('');
+      setPassword('');
+
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.box}>
@@ -46,6 +72,7 @@ export default function Signup() {
           value={email}
           onChangeText={setEmail}
           style={styles.input}
+          keyboardType="email-address"
         />
 
         <TextInput
@@ -56,9 +83,9 @@ export default function Signup() {
           style={styles.input}
         />
 
-                <TouchableOpacity style={styles.button} onPress={handleSignup}>
-  <Text style={styles.buttonText}>Signup</Text>
-</TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Signup</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -67,8 +94,8 @@ export default function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',   // vertical center
-    alignItems: 'center',       // horizontal center
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
   },
   box: {
@@ -91,6 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     padding: 15,
     borderRadius: 8,
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
