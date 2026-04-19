@@ -1,11 +1,25 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 const router = useRouter();
+
+useEffect(() => {
+  checkLogin();
+}, []);
+
+const checkLogin = async () => {
+  const token = await AsyncStorage.getItem('token');
+
+  if (token) {
+    console.log("User already logged in");
+    router.replace('/home'); // we will create this
+  }
+};
 
 
 const handleLogin = async () => {
@@ -32,15 +46,19 @@ const handleLogin = async () => {
       return;
     }
 
+    // ✅ SAVE TOKEN
+    await AsyncStorage.setItem('token', data.token);
+
     alert("Login successful 🎉");
+
+    // ✅ NAVIGATE
+    router.replace('/home');
 
   } catch (error) {
     console.log(error);
     alert("Something went wrong");
   }
 };
-
-
 
 
 
