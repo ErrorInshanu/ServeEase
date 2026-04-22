@@ -16,7 +16,7 @@ export default function Home() {
 
       {/* 🔥 Gradient Header */}
       <LinearGradient
-        colors={['#4CAF50', '#0D0D0D']}
+        colors={['#FFFFFF', '#9370DB']}
         style={styles.header}
       >
         <Text style={styles.title}>ServeEase</Text>
@@ -35,6 +35,15 @@ export default function Home() {
         >
           <Text style={styles.primaryText}>Explore Services</Text>
         </TouchableOpacity>
+
+
+        <TouchableOpacity
+  style={styles.primaryButton}
+  onPress={() => router.push('/bookings')}
+>
+  <Text style={styles.primaryText}>My Bookings</Text>
+</TouchableOpacity>
+
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Logout</Text>

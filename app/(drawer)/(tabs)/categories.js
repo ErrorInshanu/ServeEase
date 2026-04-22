@@ -33,7 +33,7 @@ export default function Categories() {
             {/* 🔥 Animated Gradient Background */}
             <Animated.View style={[styles.gradientWrapper, animatedStyle]}>
                 <LinearGradient
-                    colors={['#0D0D0D', '#4CAF50']}
+                   colors={['#FFFFFF', '#9370DB']}
                     style={StyleSheet.absoluteFill}
                 />
             </Animated.View>

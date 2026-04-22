@@ -8,13 +8,10 @@ import Animated, {
     withRepeat,
     withTiming
 } from 'react-native-reanimated';
-import { servicesData } from "./servicesdata";
 
-export default function Services() {
-    const router = useRouter();
-  const { category } = useLocalSearchParams();
-
-  const services = servicesData[category] || [];
+export default function BookingSuccess() {
+  const { service, provider, price } = useLocalSearchParams();
+  const router = useRouter();
 
   // 🔥 animation
   const opacity = useSharedValue(0.6);
@@ -34,33 +31,31 @@ export default function Services() {
   return (
     <View style={styles.container}>
 
-      {/* 🔥 Animated Background */}
+      {/* 🔥 Background */}
       <Animated.View style={[styles.gradientWrapper, animatedStyle]}>
         <LinearGradient
-          colors={['#FFFFFF', '#9370DB']}
+         colors={['#FFFFFF', '#9370DB']}
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>
 
-      {/* 🔥 Title */}
-      <Text style={styles.title}>{category}</Text>
+      {/* ✅ Success Message */}
+      <Text style={styles.title}>🎉 Booking Successful</Text>
 
-      {/* 🔥 Services List */}
-      {services.map((item) => (
-       <TouchableOpacity 
-       key={item.id} 
-       style={styles.card}
-       onPress={() => router.push({
-         pathname: "/service-detail",
-         params: { 
-           service: item.name,
-           category: category
-         }
-       })}
-     >
-          <Text style={styles.cardText}>{item.name}</Text>
-        </TouchableOpacity>
-      ))}
+      {/* 📦 Details */}
+      <View style={styles.card}>
+        <Text style={styles.text}>Service: {service}</Text>
+        <Text style={styles.text}>Provider: {provider}</Text>
+        <Text style={styles.text}>Price: {price}</Text>
+      </View>
+
+      {/* 🔥 Go Home Button */}
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={() => router.push("/home")}
+      >
+        <Text style={styles.buttonText}>Go Home</Text>
+      </TouchableOpacity>
 
     </View>
   );
@@ -80,18 +75,29 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 30,
     textAlign: 'center',
+    marginBottom: 30,
   },
   card: {
     backgroundColor: '#1E1E1E',
     padding: 20,
     borderRadius: 14,
-    marginBottom: 18,
+    marginBottom: 30,
   },
-  cardText: {
+  text: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 16,
+    borderRadius: 12,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
   },

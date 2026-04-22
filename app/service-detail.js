@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -11,7 +12,7 @@ import Animated, {
 
 export default function ServiceDetail() {
   const { service, category } = useLocalSearchParams();
-
+  const router = useRouter();
   // 🔥 animation
   const opacity = useSharedValue(0.6);
 
@@ -33,7 +34,7 @@ export default function ServiceDetail() {
       {/* 🔥 Animated Background */}
       <Animated.View style={[styles.gradientWrapper, animatedStyle]}>
         <LinearGradient
-          colors={['#0D0D0D', '#4CAF50']}
+         colors={['#FFFFFF', '#9370DB']}
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>
@@ -47,27 +48,53 @@ export default function ServiceDetail() {
       {/* 🔥 Provider Card */}
       <ScrollView showsVerticalScrollIndicator={false}>
 
-{[
-  { id: 1, name: "Rahul Sharma", phone: "9876543210", rating: "4.5", price: "₹300" },
-  { id: 2, name: "Amit Verma", phone: "9123456780", rating: "4.2", price: "₹250" },
-  { id: 3, name: "Suresh Yadav", phone: "9988776655", rating: "4.7", price: "₹350" },
-].map((item) => (
-  <View key={item.id} style={styles.card}>
-    
-    <Text style={styles.name}>{item.name}</Text>
-    <Text style={styles.info}>📞 {item.phone}</Text>
-    <Text style={styles.info}>⭐ {item.rating}</Text>
-    <Text style={styles.info}>💰 {item.price}</Text>
+        {[
+          { id: 1, name: "Rahul Sharma", phone: "9876543210", rating: "4.5", price: "₹300" },
+          { id: 2, name: "Amit Verma", phone: "9123456780", rating: "4.2", price: "₹250" },
+          { id: 3, name: "Suresh Yadav", phone: "9988776655", rating: "4.7", price: "₹350" },
+        ].map((item) => (
+          <View key={item.id} style={styles.card}>
 
-    {/* 🔥 Book Button per provider */}
-    <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Book Now</Text>
-    </TouchableOpacity>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.info}>📞 {item.phone}</Text>
+            <Text style={styles.info}>⭐ {item.rating}</Text>
+            <Text style={styles.info}>💰 {item.price}</Text>
 
-  </View>
-))}
+            {/* 🔥 Book Button per provider */}
+            <TouchableOpacity
+              style={styles.button}
+              onPress={async () => {
+                try {
+                  const newBooking = {
+                    service: service,
+                    provider: item.name,
+                    price: item.price,
+                  };
+              
+                  const existing = await AsyncStorage.getItem("bookings");
+                  const bookings = existing ? JSON.parse(existing) : [];
+              
+                  bookings.push(newBooking);
+              
+                  await AsyncStorage.setItem("bookings", JSON.stringify(bookings));
+              
+                  router.push({
+                    pathname: "/booking-success",
+                    params: newBooking
+                  });
+              
+                } catch (e) {
+                  console.log("Error saving booking", e);
+                }
+              }}
+            >
+              <Text style={styles.buttonText}>Book Now</Text>
+            </TouchableOpacity>
 
-</ScrollView>
+          </View>
+        ))}
+
+      </ScrollView>
     </View>
   );
 }
