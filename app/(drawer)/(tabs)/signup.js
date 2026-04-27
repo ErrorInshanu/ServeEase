@@ -7,12 +7,17 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // 🔥 New fields
+  const [phone, setPhone] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+
   const handleSignup = async () => {
     console.log("button clicked");
 
     // ✅ basic validation
     if (!name || !email || !password) {
-      alert("Please fill all fields");
+      alert("Please fill required fields");
       return;
     }
 
@@ -26,6 +31,11 @@ export default function Signup() {
           name,
           email,
           password,
+
+          // 🔥 sending extra fields (safe)
+          phone,
+          age,
+          gender,
         }),
       });
 
@@ -33,21 +43,30 @@ export default function Signup() {
 
       console.log(data);
 
-      // ❌ if error from backend
       if (!res.ok) {
         alert(data.message || "Signup failed");
         return;
       }
 
-      // ✅ store token
       await AsyncStorage.setItem('token', data.token);
 
-      alert("Signup successful 🎉");
+await AsyncStorage.setItem('user', JSON.stringify({
+  name,
+  email,
+  phone,
+  age,
+  gender
+}));
 
-      // optional reset
+alert("Signup successful 🎉");
+
+      // reset fields
       setName('');
       setEmail('');
       setPassword('');
+      setPhone('');
+      setAge('');
+      setGender('');
 
     } catch (error) {
       console.log(error);
@@ -80,6 +99,31 @@ export default function Signup() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          style={styles.input}
+        />
+
+        {/* 🔥 New Inputs */}
+
+        <TextInput
+          placeholder="Phone"
+          value={phone}
+          onChangeText={setPhone}
+          style={styles.input}
+          keyboardType="phone-pad"
+        />
+
+        <TextInput
+          placeholder="Age"
+          value={age}
+          onChangeText={setAge}
+          style={styles.input}
+          keyboardType="numeric"
+        />
+
+        <TextInput
+          placeholder="Gender"
+          value={gender}
+          onChangeText={setGender}
           style={styles.input}
         />
 
